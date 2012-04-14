@@ -1,11 +1,11 @@
 createBinding({
 	name: "kendoGrid",
-	defaultOption: DATA,
-	watch: {
-		data: function (value) {
-			ko.kendo.setDataSource(this, value);
-		}
-	},
+    defaultOption: DATA,
+    watch: {
+        data: function(value, options) {
+            ko.kendo.setDataSource(this, value, options);
+        }
+    },
 	templates: [
 		"rowTemplate",
 		"cellTemplate",
