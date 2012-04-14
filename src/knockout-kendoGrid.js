@@ -8,7 +8,10 @@ createBinding({
     },
 	templates: [
 		"rowTemplate",
+		"altRowTemplate",
+		"detailTemplate",
+		"toolbar",
 		"cellTemplate",
-		{ "columns": ["template", "groupHeaderTemplate", "groupFooterTemplate"] }
+		{ "columns": ["template", "groupHeaderTemplate", "groupFooterTemplate", "footerTemplate"] }
 	]
 });

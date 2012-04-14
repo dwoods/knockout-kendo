@@ -14,7 +14,7 @@ ko.kendo.BindingFactory = function() {
         //the binding handler's init function
         binding.init = function(element, valueAccessor, allBindingsAccessor, vm, context) {
               //step 1: build appropriate options for the widget from values passed in and global options
-			var options = self.buildOptions(widgetConfig, valueAccessor, allBindingsAccessor);
+              var options = self.buildOptions(widgetConfig, valueAccessor, allBindingsAccessor);
 
               //apply async, so inner templates can finish content needed during widget initialization
               if (options.async || (widgetConfig.async && options.async !== false)) {
@@ -41,7 +41,7 @@ ko.kendo.BindingFactory = function() {
             self.setupTemplates(widgetConfig.templates, options, element, context);
 
             //step 4: initialize widget
-			widget = self.getWidget(widgetConfig, options, $element, context);
+            widget = self.getWidget(widgetConfig, options, $element, context);
 
             //step 5: set up computed observables to update the widget when observable model values change
             self.watchValues(widget, options, widgetConfig, element);
@@ -61,16 +61,16 @@ ko.kendo.BindingFactory = function() {
     };
 
     //combine options passed in binding with global options
-	this.buildOptions = function (widgetConfig, valueAccessor, allBindingsAccessor) {
+    this.buildOptions = function (widgetConfig, valueAccessor, allBindingsAccessor) {
         var defaultOption = widgetConfig.defaultOption,
             options = ko.utils.extend({}, ko.bindingHandlers[widgetConfig.name].options),
-		valueOrOptions = ko.utils.unwrapObservable(valueAccessor()),
-		allBindings = allBindingsAccessor();
+            valueOrOptions = ko.utils.unwrapObservable(valueAccessor()),
+            allBindings = allBindingsAccessor();
 
-		// extend the widget options with bound value in VM
-		if (allBindings.widgetOptions) {
-			ko.utils.extend(options, allBindings.widgetOptions);
-		}
+        // extend the widget options with bound value in VM
+        if (allBindings.widgetOptions) {
+            ko.utils.extend(options, allBindings.widgetOptions);
+        }
 
         if (typeof valueOrOptions !== "object" || (defaultOption && !(defaultOption in valueOrOptions))) {
             options[defaultOption] = valueAccessor();
@@ -88,45 +88,41 @@ ko.kendo.BindingFactory = function() {
     };
 
     //prepare templates, if the widget uses them
-	this.setupTemplates = function (templateConfig, options, element, context) {
-		var existingHandler;
+    this.setupTemplates = function (templateConfig, options, element, context) {
+        var existingHandler;
 
-		function setTemplateRenderers(templateConfig, options, element, context) {
-			var i, j, option;
+        function setTemplateRenderers(templateConfig, options, element, context) {
+            var i, j, option;
 
             //initialize a ko.kendo.template for each named template
             for (i = 0, j = templateConfig.length; i < j; i++) {
                 option = templateConfig[i];
 
-				if (typeof option == "object") {
-					//set template properties recursively based on templateConfig properties 
-					//and matching properties in 'options'
-					var nestedTemplateConfig = option;
-					for (var prop in nestedTemplateConfig) {
-						if (typeof prop === "undefined") continue;
-						if (options[prop]) {
-							setTemplateRenderers(nestedTemplateConfig[prop], options[prop], element, context);
-						}
-					}
-				}
-				else {
-					if ($.isArray(options)) {
-						//if the target property is an array, apply the templateConfig to each 
-						for (var k = 0; k < options.length; k++) {
-							setTemplateRenderers(templateConfig, options[k], element, context);
-						}
-					} else {
-                if (options[option]) {
-                    options[option] = templateRenderer(options[option], context);
+                if (typeof option == "object") {
+                    //set template properties recursively based on current templateConfig properties 
+                    //and matching properties in target 'options'
+                    var nestedTemplateConfig = option;
+                    for (var prop in nestedTemplateConfig) {
+                        if (typeof prop === "undefined") continue;
+                        if (options[prop]) {
+                            setTemplateRenderers(nestedTemplateConfig[prop], options[prop], element, context);
+                        }
+                    }
                 }
-            }
+                else if ($.isArray(options)) {
+					// target is an array, apply the current templateConfig to each 
+					for (var k = 0; k < options.length; k++) {
+						setTemplateRenderers(templateConfig, options[k], element, context);
+					}
+				} else if (options[option]) {
+					options[option] = templateRenderer(options[option], context);
 				}
-			}
-		}
+            }
+        }
 
-		if (templateConfig) {
+        if (templateConfig) {
 
-			setTemplateRenderers(templateConfig, options, element, context);
+            setTemplateRenderers(templateConfig, options, element, context);
 
             //initialize bindings in dataBound event
             existingHandler = options.dataBound;
@@ -140,7 +136,7 @@ ko.kendo.BindingFactory = function() {
     };
 
     //return the actual widget
-	this.getWidget = function (widgetConfig, options, $element, context) {
+    this.getWidget = function (widgetConfig, options, $element, context) {
         var widget;
         if (widgetConfig.parent) {
             //locate the actual widget
