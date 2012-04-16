@@ -92,16 +92,20 @@ ko.kendo.BindingFactory = function() {
     //prepare templates, if the widget uses them
     this.setupTemplates = function (templateConfig, options, element, context) {
         var existingHandler;
-
         function setTemplateRenderers(templateConfig, options, element, context) {
             var i, j, option;
-
             //initialize a ko.kendo.template for each named template
+             if ($.isArray(options)) {
+                    // target is an array, apply the current templateConfig to each
+                    for (var k = 0; k < options.length; k++) {
+                        setTemplateRenderers(templateConfig, options[k], element, context);
+                    }
+             }
+            
             for (i = 0, j = templateConfig.length; i < j; i++) {
-                option = templateConfig[i];
-
+                option = templateConfig[i];             
                 if (typeof option == "object") {
-                    //set template properties recursively based on current templateConfig properties 
+                    //set template properties recursively based on current templateConfig properties
                     //and matching properties in target 'options'
                     var nestedTemplateConfig = option;
                     for (var prop in nestedTemplateConfig) {
@@ -110,15 +114,9 @@ ko.kendo.BindingFactory = function() {
                             setTemplateRenderers(nestedTemplateConfig[prop], options[prop], element, context);
                         }
                     }
+                } else if (options[option]) {
+                    options[option] = templateRenderer(options[option], context);
                 }
-                else if ($.isArray(options)) {
-					// target is an array, apply the current templateConfig to each 
-					for (var k = 0; k < options.length; k++) {
-						setTemplateRenderers(templateConfig, options[k], element, context);
-					}
-				} else if (options[option]) {
-					options[option] = templateRenderer(options[option], context);
-				}
             }
         }
 
